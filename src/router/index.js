@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import AdminLogin from '@/pages/AdminLogin'
+import DoctorLogin from '@/pages/DoctorLogin'
+import PatientLogin from '@/pages/PatientLogin'
 import Dashboard from '@/pages/Dashboard'
 import RecordCall from '@/components/RecordCall'
 import Settings from '@/components/Settings'
@@ -17,6 +18,8 @@ import ViewEmergency from '@/pages/ViewEmergency'
 import ViewCase from '@/pages/ViewCase'
 import ViewAmbulance from '@/pages/ViewAmbulance'
 import ViewDriver from '@/pages/ViewDriver'
+import HomePage from '@/pages/HomePage'
+import PatientRegister from '@/pages/PatientRegister'
 
 Vue.use(Router)
 
@@ -26,8 +29,23 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'AdminLogin',
-      component: AdminLogin
+      name: 'HomePage',
+      component: HomePage
+    },
+    {
+      path: '/doctorlogin',
+      name: 'DoctorLogin',
+      component: DoctorLogin
+    },
+    {
+      path: '/patientlogin',
+      name: 'PatientLogin',
+      component: PatientLogin
+    },
+    {
+      path: '/patientregister',
+      name: 'PatientRegister',
+      component: PatientRegister
     },
     {
       path: '/dashboard',

@@ -9,7 +9,7 @@
     </div>
 
     <div class="card card-login mx-auto mt-5">
-      <div class="card-header"><h6 class="text-center">ADMINSTRATOR'S LOGIN</h6></div>
+      <div class="card-header bg-light"><h6 class="">Doctor's Login</h6></div>
       <div class="card-body">
         <form>
           <div class="form-group">
@@ -22,9 +22,12 @@
             <input class="form-control" id="loginPass" type="password" v-model="loginPass" aria-describedby="loginPassError">
             <small id="loginPassError" class="form-text text-danger animated slideInUp" v-if="loginPassError">{{loginPassError}}</small>
           </div>
-          <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="sendLogin" :class="{disabled: btnDisabled}">
+          <button type="button" class="btn btn-info btn-block text-white btn-md" @click="sendLogin" :class="{disabled: btnDisabled}">
             <div class="loader" v-if="loaderSwitch"></div>
             <span v-else>Login</span>
+          </button>
+          <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="goHome">
+            <i class="fa fa-arrow-left"></i> Back Home
           </button>
         </form>
         <div class="text-center">
@@ -41,10 +44,10 @@ import AuthService from '../services/AuthService'
 import {LoaderMixin} from '../mixins/LoaderMixin'
 
 export default {
-  name: 'AdminLogin',
+  name: 'DoctorLogin',
   mixins: [LoaderMixin],
   data: () => ({
-    msg: 'Welcome to AdminLogin Page!',
+    msg: 'Welcome to DoctorLogin Page!',
     loginEmail: '',
     loginPass: '',
     loginEmailError: '',
@@ -94,9 +97,9 @@ export default {
         this.timeOut()
       }
     },
-    goToForgotPassword (e) {
+    goHome (e) {
       e.preventDefault()
-      this.$router.push({name: 'ForgotPassword'})
+      this.$router.push({name: 'HomePage'})
     }
   }
 }
