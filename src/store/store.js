@@ -9,8 +9,10 @@ export default new Vuex.Store({
     token: null,
     isAdminLoggedIn: false,
     adminDetails: {},
-    currentCase: {},
-    AvailAmb: []
+    isPatientLoginIn: false,
+    patientDetails: {},
+    isDoctorLogin: false,
+    doctorDetails: {}
   },
   mutations: {
     setToken (state, token) {
@@ -22,28 +24,52 @@ export default new Vuex.Store({
         state.adminDetails = {}
       }
     },
+    setTokenDoctor (state, token) {
+      state.token = token
+      if (token) {
+        state.isDoctorLogin = true
+      } else {
+        state.isDoctorLogin = false
+        state.doctorDetails = {}
+      }
+    },
+    setTokenPatient (state, token) {
+      state.token = token
+      if (token) {
+        state.isPatientLoginIn = true
+      } else {
+        state.isPatientLoginIn = false
+        state.patientDetails = {}
+      }
+    },
     setAdmin (state, adminDetails) {
       state.adminDetails = adminDetails
     },
-    keepCurrentCase (state, currentCase) {
-      state.currentCase = currentCase
+    setDoctor (state, doctorDetails) {
+      state.doctorDetails = doctorDetails
     },
-    keepAvailAmb (state, AvailAmb) {
-      state.AvailAmb = AvailAmb
+    setPatient (state, patientDetails) {
+      state.patientDetails = patientDetails
     }
   },
   actions: {
     setToken ({commit}, token) {
       commit('setToken', token)
     },
+    setTokenDoctor ({commit}, token) {
+      commit('setTokenDoctor', token)
+    },
+    setTokenPatient ({commit}, token) {
+      commit('setTokenPatient', token)
+    },
     setAdmin ({commit}, adminDetails) {
       commit('setAdmin', adminDetails)
     },
-    keepCurrentCase ({commit}, currentCase) {
-      commit('keepCurrentCase', currentCase)
+    setDoctor ({commit}, doctorDetails) {
+      commit('setDoctor', doctorDetails)
     },
-    keepAvailAmb ({commit}, AvailAmb) {
-      commit('keepAvailAmb', AvailAmb)
+    setPatient ({commit}, patientDetails) {
+      commit('setPatient', patientDetails)
     }
   }
 })

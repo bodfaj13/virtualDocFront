@@ -2,10 +2,10 @@
   <div class="container animated bounceIn">
     <!-- login form -->
     <!-- top alert -->
-    <div class="alert alert-success animated slideInUp"  v-if="loginSuccess">
-      <strong>Registration Successful</strong>
+    <div class="alert alert-success animated slideInUp"  v-if="registerSuccess">
+      <strong>Creation Successful</strong>
       <br>
-      Dashboard is being prepared...
+      Navigating to login page...
     </div>
 
     <div class="card card-register mx-auto mt-5">
@@ -15,35 +15,58 @@
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
-                <label for="exampleInputName">First name</label>
-                <input class="form-control" id="exampleInputName" type="text" aria-describedby="nameHelp" placeholder="Enter first name">
+                <label for="firstName">First name</label>
+                <input class="form-control" id="firstName" type="text" aria-describedby="" placeholder="" v-model="firstName">
+                <small id="firstNameError" class="form-text text-danger animated slideInUp" v-if="firstNameError">{{firstNameError}}</small>
               </div>
               <div class="col-md-6">
-                <label for="exampleInputLastName">Last name</label>
-                <input class="form-control" id="exampleInputLastName" type="text" aria-describedby="nameHelp" placeholder="Enter last name">
+                <label for="lastName">Last name</label>
+                <input class="form-control" id="lastName" type="text" aria-describedby="" placeholder="" v-model="lastName">
+                <small id="lastNameError" class="form-text text-danger animated slideInUp" v-if="lastNameError">{{lastNameError}}</small>
               </div>
             </div>
           </div>
           <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input class="form-control" id="exampleInputEmail1" type="email" aria-describedby="emailHelp" placeholder="Enter email">
+            <label for="email">Email address</label>
+            <input class="form-control" id="email" type="email" aria-describedby="" placeholder="" v-model="email">
+            <small id="emailError" class="form-text text-danger animated slideInUp" v-if="emailError">{{emailError}}</small>
+          </div>
+          <div class="form-group">
+            <label for="contactNo">Contact Numeber</label>
+            <input class="form-control" id="email" type="number" aria-describedby="" placeholder="" v-model="contactNo">
+            <small id="contactNoError" class="form-text text-danger animated slideInUp" v-if="contactNoError">{{contactNoError}}</small>
           </div>
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
-                <label for="exampleInputPassword1">Password</label>
-                <input class="form-control" id="exampleInputPassword1" type="password" placeholder="Password">
+                <label for="password">Password</label>
+                <input class="form-control" id="password" type="password" placeholder="">
+                <small id="passwordError" class="form-text text-danger animated slideInUp" v-if="passwordError">{{passwordError}}</small>
               </div>
               <div class="col-md-6">
-                <label for="exampleConfirmPassword">Confirm password</label>
-                <input class="form-control" id="exampleConfirmPassword" type="password" placeholder="Confirm password">
+                <label for="confirmPassword">Confirm Password</label>
+                <input class="form-control" id="confirmPassword" type="password" placeholder="">
+                <small id="confirmPasswordError" class="form-text text-danger animated slideInUp" v-if="confirmPasswordError">{{confirmPasswordError}}</small>
               </div>
             </div>
           </div>
-          <a class="btn btn-info btn-block" href="login.html">Register</a>
+          <div class="row form-submit">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-info btn-block text-white btn-md" @click="createPatient" :class="{disabled: btnDisabled}">
+                <div class="loader" v-if="loaderSwitch"></div>
+                <span v-else>Create Driver
+                </span>
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="cancel" v-if="!btnDisabled">
+                Clear
+              </button>
+            </div>
+          </div>
         </form>
         <div class="text-center">
-          <a class="d-block small mt-3" href="login.html">Already have and account? Login</a>
+          <a class="d-block small mt-3" href="" @click="patientLogin">Already have and account? Login</a>
         </div>
       </div>
     </div>
@@ -65,6 +88,10 @@ export default {
     goHome (e) {
       e.preventDefault()
       this.$router.push({name: 'HomePage'})
+    },
+    patientLogin (e) {
+      e.preventDefault()
+      this.$router.push({name: 'PatientLogin'})
     }
   }
 }

@@ -31,7 +31,7 @@
           </button>
         </form>
         <div class="text-center">
-          <a class="d-block small mt-3" href="" @click="goToPatientRegister">Register an Accont</a>
+          <a class="d-block small mt-3" href="" @click="goToPatientRegister">Register an Account</a>
           <!-- <a class="d-block small" href="" @click="goToForgotPassword">Forgot Password?</a> -->
         </div>
       </div>
@@ -73,18 +73,18 @@ export default {
       }
       if (go) {
         try {
-          const response = await AuthService.adminLogin({
+          const response = await AuthService.patientLogin({
             email: this.loginEmail,
             password: this.loginPass
           })
           console.log(response)
           this.loginSuccess = response.data.success
-          this.$store.dispatch('setToken', response.data.token)
-          this.$store.dispatch('setAdmin', response.data.adminDetails)
-          localStorage.setItem('setAdmin', JSON.stringify(response.data.adminDetails))
+          this.$store.dispatch('setTokenPatient', response.data.token)
+          this.$store.dispatch('setPatient', response.data.patientDetails)
+          localStorage.setItem('setPatient', JSON.stringify(response.data.patientDetails))
           this.timeOut()
           setTimeout(() => {
-            this.$router.push({name: 'RecordCall'})
+            this.$router.push({name: 'PatientDasboard'})
           }, 2000)
         } catch (error) {
           this.error = error.response.data.error
