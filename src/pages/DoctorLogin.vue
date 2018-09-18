@@ -73,18 +73,18 @@ export default {
       }
       if (go) {
         try {
-          const response = await AuthService.adminLogin({
+          const response = await AuthService.doctorLogin({
             email: this.loginEmail,
             password: this.loginPass
           })
           console.log(response)
           this.loginSuccess = response.data.success
-          this.$store.dispatch('setToken', response.data.token)
-          this.$store.dispatch('setAdmin', response.data.adminDetails)
-          localStorage.setItem('setAdmin', JSON.stringify(response.data.adminDetails))
+          this.$store.dispatch('setTokenDoctor', response.data.token)
+          this.$store.dispatch('setDoctor', response.data.doctorDetails)
+          localStorage.setItem('setDoctor', JSON.stringify(response.data.doctorDetails))
           this.timeOut()
           setTimeout(() => {
-            this.$router.push({name: 'RecordCall'})
+            this.$router.push({name: 'AnswerComplaints'})
           }, 2000)
         } catch (error) {
           this.error = error.response.data.error

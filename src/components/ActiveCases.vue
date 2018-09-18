@@ -1,8 +1,8 @@
 <template>
   <div>
-      <h3>Active Cases</h3>  
+      <h3>Active Cases</h3>
       <hr>
-      
+
       <div class="card mb-3">
           <div class="card-header">
           <i class="fa fa-table"></i> View Call Table  </div>
@@ -21,7 +21,7 @@
                 <div class="form-group">
                   <label for="search">Search by Caller Name</label>
                   <input type="email" class="form-control" id="search" aria-describedby="search" placeholder="" v-model="inputSearch">
-                  
+
                 </div>
               </div>
             </div>
@@ -83,7 +83,7 @@
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing" :class="{disabled: prevBtn}">Previous</a></li> -->
                 <template  v-for="(pages, key) in noPages">
                   <li class="page-item" :key="key"><a class="page-link" @click="getCurrentView(pages)">{{pages}}</a></li>
-                  
+
                 </template>
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing">Next</a></li> -->
               </ul>
@@ -93,22 +93,22 @@
       </div>
 
       <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="releaseModal" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="releaseModalLabel">Case delivered successfully?</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">Select "<b>Logout</b>" below if you are ready to end your current session.</div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="" @click="releaseCase(releaseCaseNo)" data-dismiss="modal">Proceed</a>
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="releaseModalLabel">Case delivered successfully?</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">Select "<b>Logout</b>" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+              <a class="btn btn-primary" href="" @click="releaseCase(releaseCaseNo)" data-dismiss="modal">Proceed</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

@@ -1,11 +1,10 @@
 <template>
-  <div class="content">
-    <PatientNav></PatientNav>
-    <div class="content-wrapper">
-      <div class="container-fluid">
+  <div>
+
+
         <div class="row">
           <div class="col-md-12">
-            <h3>View Your Complaints</h3>
+            <h3>Active Complaints</h3>
           </div>
         </div>
         <hr>
@@ -41,10 +40,11 @@
                     <th>#</th>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Desc</th>
-                    <th>Level</th>
-                    <th>StillActive</th>
+                    <th>Patient ID</th>
+
+                    <th>Description</th>
                     <th>Created At</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tfoot>
@@ -52,10 +52,12 @@
                     <th>#</th>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Desc</th>
-                    <th>Level</th>
-                    <th>StillActive</th>
+                    <th>Patient ID</th>
+
+                    <th>Description</th>
+
                     <th>Created At</th>
+                    <th>Action</th>
                   </tr>
                 </tfoot>
                 <tbody v-if="totalLength > 0">
@@ -64,10 +66,17 @@
                       <th scope="row">{{index + 1}}</th>
                       <td>{{complaint._id}}</td>
                       <td>{{complaint.title}}</td>
+
+                      <td>{{complaint.patientId}}</td>
                       <td>{{complaint.description}}</td>
-                      <td>{{complaint.level}}</td>
-                      <td>{{complaint.stillActive}}</td>
+
                       <td>{{complaint.createdAt}}</td>
+                      <td>
+                        <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="releaseCaseTrigger(index)" data-toggle="modal" data-target="#releaseModal">
+                          Accept Treatment
+                        </button>
+
+                      </td>
                     </tr>
                   </template>
                 </tbody>
@@ -94,21 +103,76 @@
         <div class="card-footer small text-muted">Updated</div>
       </div>
 
+
+
+
+      <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="releaseModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="releaseModalLabel">Take Up Complaint</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <div class="form-row">
+                    <div class="col-md-12">
+                      <label for="medicalRemark">Medical Prescription</label>
+                      <textarea class="form-control" rows="5" id="medicalRemark" v-model="medicalPrescrption" placeholder="Medical Prescription..."></textarea>
+                      <small id="medicalPrescrptionError" class="form-text text-danger animated slideInUp" v-if="medicalPrescrptionError">{{medicalPrescrptionError}}</small>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="col-md-12">
+                      <label for="medicalRemark">Medical Remark</label>
+                      <textarea class="form-control" rows="5" id="medicalRemark" v-model="medicalRemark" placeholder="Medical Remark..."></textarea>
+                      <small id="medicalRemarkError" class="form-text text-danger animated slideInUp" v-if="medicalRemarkError">{{medicalRemarkError}}</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="row form-submit">
+                  <div class="col-md-12">
+                    <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="answerIssue" :class="{disabled: btnDisabled}">
+                      <div class="loader" v-if="loaderSwitch"></div>
+                      <span v-else>Attend To Issue
+                        <i class="fa fa-fw fa-volume-up"></i>
+                      </span>
+                    </button>
+                  </div>
+                  <br>
+                  <br>
+                  <div class="col-md-12">
+                    <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="cancel" v-if="!btnDisabled">
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <PatientFooter></PatientFooter>
+
+
   </div>
 </template>
 
 <script>
-import PatientNav from './PatientNav'
-import PatientFooter from './PatientFooter'
 import DataFunctions from '../../services/DataFunctions'
+import Functions from '../../services/Functions'
+import {LoaderMixin} from '../../mixins/LoaderMixin'
 
 export default {
-  name: 'PatientViewComplaints',
+  name: 'AnswerComplaints',
+  mixins: [LoaderMixin],
   data: () => ({
-    msg: 'Welcome to PatientViewComplaints Component!',
+    msg: 'Welcome to AnswerComplaints Component!',
     totalComplaints: [],
     totalLength: '',
     currentView: [],
@@ -116,14 +180,21 @@ export default {
     viewSelect: 10,
     inputSearch: '',
     prevBtn: true,
-    patientId: ''
+    doctorId: '',
+    releaseComplaintNo: '',
+    getComplaintItem: {},
+    releaseSuccess: '',
+    answerSuccess: '',
+    medicalPrescrption: '',
+    medicalPrescrptionError: '',
+    medicalRemark: '',
+    medicalRemarkError: '',
+    error: ''
   }),
   methods: {
-    async getTotalComplaint () {
+    async getActiveComplaint () {
       try {
-        const response = await DataFunctions.getPatientComplaints({
-          patientId: this.patientId
-        })
+        const response = await DataFunctions.getActiveComplaint()
         console.log(response)
         this.totalComplaints = response.data.data
         this.totalLength = this.totalComplaints.length
@@ -168,18 +239,67 @@ export default {
       e.preventDefault()
     },
     getUser () {
-      var patient = JSON.parse(localStorage.getItem('setPatient'))
-      this.patientId = patient._id
-      console.log(this.patientId)
+      var doctor = JSON.parse(localStorage.getItem('setDoctor'))
+      this.doctorId = doctor._id
+      console.log(this.doctorId)
+    },
+    releaseCaseTrigger (no) {
+      this.releaseComplaintNo = no
+      this.getComplaintItem = this.totalComplaints[no]
+      console.log(no)
+      console.log(this.getComplaintItem)
+    },
+    async answerIssue (e) {
+      e.preventDefault()
+      this.btnDisabled = true
+      this.loaderSwitch = true
+      var go = true
+      this.medicalPrescrptionError = ''
+      this.medicalRemarkError = ''
+      if (this.medicalPrescrption.length === 0) {
+        this.medicalPrescrptionError = 'Invalid Medical Prescription supplied'
+        go = false
+      }
+      if (this.medicalRemark.length === 0) {
+        this.medicalRemarkError = 'Invalid Medical Remark supplied'
+        go = false
+      }
+      if (go) {
+        try {
+          const response = await Functions.answerComplaint({
+            complaintId: this.getComplaintItem._id,
+            doctorId: this.doctorId,
+            medicalPrescrption: this.medicalPrescrption,
+            medicalRemark: this.medicalRemark
+          })
+          console.log(response)
+          this.answerSuccess = response.data.success
+          this.getActiveComplaint()
+          this.$emit('reRunNumbers', true)
+          this.timeOut()
+          this.clearInputs()
+        } catch (error) {
+          this.error = error.response.data.error
+          console.log(this.error)
+        }
+      } else {
+        this.timeOut()
+      }
+    },
+    clearInputs () {
+      this.medicalPrescrption = ''
+      this.medicalRemark = ''
+      this.medicalPrescrptionError = ''
+      this.medicalRemarkError = ''
+    },
+    cancel (e) {
+      e.preventDefault()
+      this.clearInputs()
     }
-  },
-  components: {
-    PatientNav,
-    PatientFooter
   },
   mounted () {
     this.getUser()
-    this.getTotalComplaint()
+    this.getActiveComplaint()
     // this.calPag()
   },
   updated () {

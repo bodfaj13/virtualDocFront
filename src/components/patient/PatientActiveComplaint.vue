@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>View Your Complaints</h3>
+            <h3>Active Complaints</h3>
           </div>
         </div>
         <hr>
@@ -41,10 +41,13 @@
                     <th>#</th>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Desc</th>
-                    <th>Level</th>
-                    <th>StillActive</th>
-                    <th>Created At</th>
+
+
+                    <th>Doctor Id</th>
+                    <th>Doctor Name</th>
+                    <th>Doctor Remark</th>
+                    <th>Updated At</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tfoot>
@@ -52,10 +55,13 @@
                     <th>#</th>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Desc</th>
-                    <th>Level</th>
-                    <th>StillActive</th>
-                    <th>Created At</th>
+
+
+                    <th>Doctor Id</th>
+                    <th>Doctor Name</th>
+                    <th>Doctor Remark</th>
+                    <th>Updated At</th>
+                    <th>Action</th>
                   </tr>
                 </tfoot>
                 <tbody v-if="totalLength > 0">
@@ -64,10 +70,17 @@
                       <th scope="row">{{index + 1}}</th>
                       <td>{{complaint._id}}</td>
                       <td>{{complaint.title}}</td>
-                      <td>{{complaint.description}}</td>
-                      <td>{{complaint.level}}</td>
-                      <td>{{complaint.stillActive}}</td>
-                      <td>{{complaint.createdAt}}</td>
+
+                      <td>{{complaint.doctorId}}</td>
+                      <td>{{complaint.doctorName}}</td>
+                      <td>{{complaint.doctorRemark}}</td>
+                      <td>{{complaint.updateAt}}</td>
+                      <td>
+                        <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="releaseCaseTrigger(index)" data-toggle="modal" data-target="#releaseModal">
+                          Accept Treatment
+                        </button>
+
+                      </td>
                     </tr>
                   </template>
                 </tbody>
@@ -97,6 +110,27 @@
       </div>
     </div>
     <PatientFooter></PatientFooter>
+
+
+      <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="releaseModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="releaseModalLabel">Treatment Accepted?</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">Select "<b>Proceed</b>" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+              <a class="btn btn-primary" href="" @click="acceptTreatment(releaseComplaintNo)" data-dismiss="modal">Proceed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
   </div>
 </template>
 
@@ -104,11 +138,12 @@
 import PatientNav from './PatientNav'
 import PatientFooter from './PatientFooter'
 import DataFunctions from '../../services/DataFunctions'
+import Functions from '../../services/Functions'
 
 export default {
-  name: 'PatientViewComplaints',
+  name: 'PatientActiveComplaint',
   data: () => ({
-    msg: 'Welcome to PatientViewComplaints Component!',
+    msg: 'Welcome to PatientActiveComplaint.vue Component!',
     totalComplaints: [],
     totalLength: '',
     currentView: [],
@@ -116,12 +151,14 @@ export default {
     viewSelect: 10,
     inputSearch: '',
     prevBtn: true,
-    patientId: ''
+    patientId: '',
+    releaseComplaintNo: '',
+    releaseSuccess: ''
   }),
   methods: {
-    async getTotalComplaint () {
+    async getTotalActiveComplaint () {
       try {
-        const response = await DataFunctions.getPatientComplaints({
+        const response = await DataFunctions.getPatientActiveComplaints({
           patientId: this.patientId
         })
         console.log(response)
@@ -171,6 +208,26 @@ export default {
       var patient = JSON.parse(localStorage.getItem('setPatient'))
       this.patientId = patient._id
       console.log(this.patientId)
+    },
+    releaseCaseTrigger (no) {
+      this.releaseComplaintNo = no
+      console.log(no)
+    },
+    async acceptTreatment (no) {
+      console.log(no)
+      var getComplaint = this.totalComplaints[no]
+      try {
+        const response = await Functions.acceptTreatment({
+          complaintId: getComplaint._id
+        })
+        console.log(response)
+        this.releaseSuccess = response.data.success
+        this.getTotalActiveComplaint()
+        this.$emit('reRunNumbers', true)
+      } catch (error) {
+        this.error = error.response.data.error
+        console.log(this.error)
+      }
     }
   },
   components: {
@@ -179,7 +236,7 @@ export default {
   },
   mounted () {
     this.getUser()
-    this.getTotalComplaint()
+    this.getTotalActiveComplaint()
     // this.calPag()
   },
   updated () {

@@ -1,12 +1,12 @@
 <template>
-  <div class="content" id="page-top">
-      <PatientNav></PatientNav>
-      <div class="content-wrapper">
-      <div class="container-fluid">
+  <div class="content bg-dark" id="page-top">
+    <PatientNav></PatientNav>
+    <div class="content-wrapper">
+      <div class="container-fluid bg-light">
         <!-- Breadcrumbs-->
         <ol class="breadcrumb animated slideInLeft">
           <li class="breadcrumb-item">
-            <a href="#" style="text-decoration: none" @click="doNothing">Dashboard</a>
+            <a href="" style="text-decoration: none" @click="doNothing">Dashboard</a>
           </li>
           <li class="breadcrumb-item active">{{username | toUppercase}}</li>
         </ol>
@@ -14,15 +14,15 @@
 
         <!-- Icon Cards-->
         <div class="row">
-          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
+          <div class="col-xl-4 col-sm-6 mb-4 animated bounceIn">
             <div class="card text-white bg-primary o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon animated pulse infinite">
-                  <i class="fa fa-fw fa-phone"></i>
+                  <i class="fa fa-fw fa-volume-up"></i>
                 </div>
-                <div class="mr-5"><b>{{totalCalls}} Total Call(s)</b></div>
+                <div class="mr-5"><b>{{totalComplaintsNo}} Total Complaint(s)</b></div>
               </div>
-              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewCall">
+              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllComplaint">
                 <span class="float-left">View Details</span>
                 <span class="float-right">
                   <i class="fa fa-angle-right"></i>
@@ -30,15 +30,15 @@
               </a>
             </div>
           </div>
-          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
+          <div class="col-xl-4 col-sm-6 mb-4 animated bounceIn">
             <div class="card text-white bg-warning o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon animated pulse infinite">
-                  <i class="fa fa-fw fa-list"></i>
+                  <i class="fa fa-fw fa-heartbeat"></i>
                 </div>
-                <div class="mr-5"><b>{{totalCases}}  Total Case(s)</b></div>
+                <div class="mr-5"><b>{{totalActiveComplaintsNo}}  Active Complaint(s)</b></div>
               </div>
-              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewCase">
+              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllAciveComplaint">
                 <span class="float-left">View Details</span>
                 <span class="float-right">
                   <i class="fa fa-angle-right"></i>
@@ -46,31 +46,15 @@
               </a>
             </div>
           </div>
-          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
-            <div class="card text-white bg-success o-hidden h-100">
-              <div class="card-body">
-                <div class="card-body-icon animated pulse infinite">
-                  <i class="fa fa-fw fa-ambulance"></i>
-                </div>
-                <div class="mr-5"><b>{{availableAmb}} Available Ambulance(s)</b></div>
-              </div>
-              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAmbulance">
-                <span class="float-left">View Details</span>
-                <span class="float-right">
-                  <i class="fa fa-angle-right"></i>
-                </span>
-              </a>
-            </div>
-          </div>
-          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
+          <div class="col-xl-4 col-sm-6 mb-4 animated bounceIn">
             <div class="card text-white bg-danger o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon animated pulse infinite">
-                  <i class="fa fa-fw fa-briefcase"></i>
+                  <i class="fa fa-fw fa-stethoscope"></i>
                 </div>
-                <div class="mr-5"><b>{{totaldrivers}} Available <br>Driver(s)</b></div>
+                <div class="mr-5"><b>{{totalResolvedComplaintsNo}} Resolved Complaint(s)</b></div>
               </div>
-              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewDriver">
+              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllReolvedComplaint">
                 <span class="float-left">View Details</span>
                 <span class="float-right">
                   <i class="fa fa-angle-right"></i>
@@ -83,9 +67,9 @@
       </div>
 
       <!-- component view -->
-      <!-- <router-view class="container-fluid" id="cview" @reRunNumbers="reRun"></router-view>
+      <router-view class="container-fluid" id="cview" @reRunNumbers="reRun"></router-view>
       <br>
-      <br> -->
+      <br>
 
       <!-- Footer -->
       <PatientFooter></PatientFooter>
@@ -97,11 +81,17 @@
 <script>
 import PatientNav from './PatientNav'
 import PatientFooter from './PatientFooter'
+import DataFunctions from '../../services/DataFunctions'
 
 export default {
   name: 'PatientDasboard',
   data: () => ({
-    msg: 'Welcome to PatientDasboard Component!'
+    msg: 'Welcome to PatientDasboard Component!',
+    username: '',
+    totalComplaintsNo: '',
+    totalActiveComplaintsNo: '',
+    patientId: '',
+    totalResolvedComplaintsNo: ''
   }),
   components: {
     PatientNav,
@@ -111,10 +101,75 @@ export default {
     getUser () {
       var user = JSON.parse(localStorage.getItem('setPatient'))
       this.username = user.fullName
+      this.patientId = user._id
+      console.log(this.username)
+      console.log(this.patientId)
+    },
+    doNothing (e) {
+      e.preventDefault()
+    },
+    reRun () {
+      this.getTotalComplaintNo()
+      this.getTotalActiveComplaintNo()
+      this.getPatientResolvedComplaint()
+    },
+    async getTotalComplaintNo () {
+      try {
+        const response = await DataFunctions.getPatientComplaints({
+          patientId: this.patientId
+        })
+        console.log(response)
+        this.totalComplaintsNo = response.data.data.length
+        console.log(this.totalComplaintsNo)
+      } catch (error) {
+        console.log(error.response.data)
+      }
+    },
+    async getTotalActiveComplaintNo () {
+      try {
+        const response = await DataFunctions.getPatientActiveComplaints({
+          patientId: this.patientId
+        })
+        console.log(response)
+        this.totalActiveComplaintsNo = response.data.data.length
+        console.log(this.totalActiveComplaintsNo)
+      } catch (error) {
+        console.log(error.response.data)
+      }
+    },
+    async getPatientResolvedComplaint () {
+      try {
+        const response = await DataFunctions.getPatientResolvedComplaint({
+          patientId: this.patientId
+        })
+        console.log(response)
+        this.totalResolvedComplaintsNo = response.data.data.length
+        console.log(this.totalResolvedComplaintsNo)
+      } catch (error) {
+        console.log(error.response.data)
+      }
+    },
+    goToViewAllComplaint (e) {
+      e.preventDefault()
+      this.$router.push({name: 'PatientViewComplaints'})
+    },
+    goToViewAllAciveComplaint (e) {
+      e.preventDefault()
+      this.$router.push({name: 'PatientActiveComplaint'})
+    },
+    goToViewAllReolvedComplaint (e) {
+      e.preventDefault()
+      this.$router.push({name: 'PatientResolvedComplaint'})
     }
   },
   mounted () {
     this.getUser()
+    this.reRun()
+  },
+  filters: {
+    toUppercase (value) {
+      return value.toUpperCase()
+    }
   }
 }
 </script>

@@ -1,19 +1,19 @@
 <template>
   <div class="content">
-    <DashboardNav></DashboardNav>
+    <PatientNav></PatientNav>
     <div class="content-wrapper">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>View Ambulance</h3>
+            <h3>Resolved Complaints</h3>
           </div>
-        </div>  
+        </div>
         <hr>
 
         <!-- <code>query: {{ query }}</code> -->
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fa fa-table"></i> View Ambulance
+            <i class="fa fa-table"></i> Complaints
           </div>
           <div class="card-body">
             <div class="row">
@@ -28,9 +28,9 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="search">Search by Plate Number</label>
+                  <label for="search">Search by Title</label>
                   <input type="email" class="form-control" id="search" aria-describedby="search" placeholder="" v-model="inputSearch">
-                  
+
                 </div>
               </div>
             </div>
@@ -39,44 +39,41 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Ambulance ID</th>
-                    <th>Assigned Driver ID</th>
-                    <th>Assigned Driver Name</th>
-                    <th>Plate Number</th>
-                    <th>Vechile Model</th>
-                    <th>VechileName</th>
+                    <th>ID</th>
+                    <th>Title</th>
+
+                    <th>StillActive</th>
                     <th>Created At</th>
+                    <th>Updated At</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
                     <th>#</th>
-                    <th>Ambulance ID</th>
-                    <th>Assigned Driver ID</th>
-                    <th>Assigned Driver Name</th>
-                    <th>Plate Number</th>
-                    <th>Vechile Model</th>
-                    <th>VechileName</th>
+                    <th>ID</th>
+                    <th>Title</th>
+
+                    <th>StillActive</th>
                     <th>Created At</th>
+                    <th>Updated At</th>
                   </tr>
                 </tfoot>
-                <tbody v-if="totalAmbulance">
-                  <template v-for="(ambulance, index) in filteredAmbulance">
-                    <tr>
+                <tbody v-if="totalLength > 0">
+                  <template v-for="(complaint, index) in filteredComplaint">
+                    <tr :key="index">
                       <th scope="row">{{index + 1}}</th>
-                      <td>{{ambulance._id}}</td>
-                      <td>{{ambulance.assignedDriver}}</td>
-                      <td>{{ambulance.assignedDriverName}}</td>
-                      <td>{{ambulance.plateNumber}}</td>
-                      <td>{{ambulance.vechileName}}</td>
-                      <td>{{ambulance.vechileModel}}</td>
-                      <td>{{ambulance.createdAt}}</td>
+                      <td>{{complaint._id}}</td>
+                      <td>{{complaint.title}}</td>
+
+                      <td>{{complaint.stillActive}}</td>
+                      <td>{{complaint.createdAt}}</td>
+                      <td>{{complaint.updateAt}}</td>
                     </tr>
                   </template>
                 </tbody>
                 <tbody v-else>
                   <tr class="table-secondary">
-                    <td colspan="6">
+                    <td colspan="7">
                       <p class="text-center">There is no data</p>
                     </td>
                   </tr>
@@ -88,46 +85,50 @@
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing" :class="{disabled: prevBtn}">Previous</a></li> -->
                 <template  v-for="(pages, key) in noPages">
                   <li class="page-item" :key="key"><a class="page-link" @click="getCurrentView(pages)">{{pages}}</a></li>
-                  
+
                 </template>
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing">Next</a></li> -->
               </ul>
             </nav>
           </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        <div class="card-footer small text-muted">Updated</div>
       </div>
 
       </div>
     </div>
-    <Footer></Footer>
+    <PatientFooter></PatientFooter>
   </div>
 </template>
 
 <script>
-import DashboardNav from '../components/DashboardNav'
-import Footer from '../components/Footer'
-import DataFunctions from '../services/DataFunctions'
+import PatientNav from './PatientNav'
+import PatientFooter from './PatientFooter'
+import DataFunctions from '../../services/DataFunctions'
 
 export default {
-  name: 'Viewambulance',
+  name: 'PatientResolvedComplaint',
   data: () => ({
-    msg: 'Welcome to Viewambulance Component!',
-    totalAmbulance: [],
+    msg: 'Welcome to PatientResolvedComplaint.vue Component!',
+    totalComplaints: [],
     totalLength: '',
     currentView: [],
     noPages: '',
     viewSelect: 10,
     inputSearch: '',
-    prevBtn: true
+    prevBtn: true,
+    patientId: ''
   }),
   methods: {
-    async getTotalAmbulance () {
+    async getTotalResolvedComplaint () {
       try {
-        var response = await DataFunctions.getAvailableAmbulanceDetails()
-        this.totalAmbulance = response.data.data
-        this.totalLength = this.totalAmbulance.length
+        const response = await DataFunctions.getPatientResolvedComplaint({
+          patientId: this.patientId
+        })
+        console.log(response)
+        this.totalComplaints = response.data.data
+        this.totalLength = this.totalComplaints.length
         for (var i = 0; i < this.totalLength; i++) {
-          this.currentView.push(this.totalAmbulance[i])
+          this.currentView.push(this.totalComplaints[i])
         }
       } catch (error) {
         console.log(error.response.data)
@@ -148,31 +149,37 @@ export default {
       this.currentView = []
       if (toSeeing === 0) {
         for (var i = 0; i < this.viewSelect; i++) {
-          this.currentView.push(this.totalAmbulance[i])
+          this.currentView.push(this.totalComplaints[i])
         }
       } else {
         if (toSee > this.totalLength) {
           console.log('but now to see ' + this.totalLength)
           for (var y = toSeeing; y < this.totalLength; y++) {
-            this.currentView.push(this.totalAmbulance[y])
+            this.currentView.push(this.totalComplaints[y])
           }
         } else {
           for (var x = toSeeing; x < toSee; x++) {
-            this.currentView.push(this.totalAmbulance[x])
+            this.currentView.push(this.totalComplaints[x])
           }
         }
       }
     },
     doNothing (e) {
       e.preventDefault()
+    },
+    getUser () {
+      var patient = JSON.parse(localStorage.getItem('setPatient'))
+      this.patientId = patient._id
+      console.log(this.patientId)
     }
   },
   components: {
-    DashboardNav,
-    Footer
+    PatientNav,
+    PatientFooter
   },
   mounted () {
-    this.getTotalAmbulance()
+    this.getUser()
+    this.getTotalResolvedComplaint()
     // this.calPag()
   },
   updated () {
@@ -188,14 +195,14 @@ export default {
       console.log(this.viewSelect)
       this.currentView = []
       for (var i = 0; i < this.viewSelect; i++) {
-        this.currentView.push(this.totalAmbulance[i])
+        this.currentView.push(this.totalComplaints[i])
       }
     }
   },
   computed: {
-    filteredAmbulance: function () {
-      return this.currentView.filter((ambulances) => {
-        return ambulances.plateNumber.match(this.inputSearch)
+    filteredComplaint: function () {
+      return this.currentView.filter((complaints) => {
+        return complaints.title.match(this.inputSearch)
       })
     }
   }

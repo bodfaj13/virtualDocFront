@@ -1,46 +1,37 @@
 import Api from './Api'
 
 export default {
-  getDriversNo () {
-    return Api().get('getdriversno')
+  getPatientComplaints (credentials) {
+    return Api().post('getpatientcomplaints', credentials)
   },
-  getDriverAvailbleForAssinging () {
-    return Api().get('getdriversavilableforassining')
+  getPatientActiveComplaints (credentials) {
+    return Api().post('getpatientactivecomplaints', credentials)
   },
-  getAmbulanceNo () {
-    return Api().get('getambulanceno')
+  getPatientResolvedComplaint (credentials) {
+    return Api().post('getpatientresolvedcomplaints', credentials)
   },
-  getAmbulanceDetails () {
-    return Api().get('getambulancedetails')
+  getDoctorComplaints (credentials) {
+    return Api().post('getdoctorcomplaints', credentials)
   },
-  getTotalCallsNo () {
-    return Api().get('gettotalcallno')
+  getDoctorActiveComplaints (credentials) {
+    return Api().post('getdoctoractivecomplaints', credentials)
   },
-  getTotalCasesNo () {
-    return Api().get('gettotalcasesno')
+  getDoctorResolvedComplaint (credentials) {
+    return Api().post('getdoctorresolvedcomplaints', credentials)
   },
-  getAvailableAmbulanceNo () {
-    return Api().get('getavailableambulanceno')
+  getDoctor () {
+    return Api().get('getdoctor')
   },
-  getActiveEmergencyNo () {
-    return Api().get('getactiveemergencyno')
+  getPatient () {
+    return Api().get('getpatient')
   },
-  getAvailableAmbulanceDetails () {
-    return Api().get('getavailableambulancdetails')
+  getDoctorsAvailable () {
+    return Api().get('getdocvtorsavailable')
   },
-  getTotalCall () {
-    return Api().get('gettotalcall')
+  getActiveComplaint () {
+    return Api().get('getactivecomplaint')
   },
-  getTotalCase () {
-    return Api().get('gettotalcases')
-  },
-  getActiveEmergency () {
-    return Api().get('getactiveambulance')
-  },
-  getAllDrivers () {
-    return Api().get('getalldrivers')
-  },
-  getAllAmbulances () {
-    return Api().get('getallambulances')
+  getAnsweredComplaint () {
+    return Api().get('getansweredcomplaint')
   }
 }

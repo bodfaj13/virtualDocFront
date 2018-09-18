@@ -84,7 +84,7 @@ export default {
           localStorage.setItem('setPatient', JSON.stringify(response.data.patientDetails))
           this.timeOut()
           setTimeout(() => {
-            this.$router.push({name: 'PatientDasboard'})
+            this.$router.push({name: 'MakeComplaints'})
           }, 2000)
         } catch (error) {
           this.error = error.response.data.error

@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-      {{msg | toUppercase}}
+  <div>
+
   </div>
 </template>
 
@@ -9,12 +9,7 @@ export default {
   name: 'dummy',
   data: () => ({
     msg: 'Welcome to dummy Component!'
-  }),
-  filters: {
-      toUppercase (value) {
-        return value.toUpperCase()
-      }
-  }
+  })
 }
 </script>
 
@@ -31,4 +26,3 @@ export default {
 
   }
 </style>
-    

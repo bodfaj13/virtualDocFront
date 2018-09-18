@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="bg-light">
     <Nav></Nav>
 
     <!-- Page Content -->
