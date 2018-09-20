@@ -3,7 +3,7 @@ import store from '@/store/store'
 
 export default () => {
   return axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'https://virtualdoc-back.herokuapp.com/api',
     headers: {'x-auth': store.state.token}
   })
 }
