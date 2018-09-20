@@ -9,5 +9,8 @@ export default {
   },
   acceptTreatment (credentials) {
     return Api().post('accepttreatment', credentials)
+  },
+  changeStatus (credentials) {
+    return Api().post('changestatus', credentials)
   }
 }

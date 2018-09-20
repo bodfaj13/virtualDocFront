@@ -5,15 +5,16 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>View Cases</h3>
+            <h3>Active Doctor</h3>
           </div>
-        </div>  
+        </div>
         <hr>
 
         <!-- <code>query: {{ query }}</code> -->
         <div class="card mb-3">
           <div class="card-header">
-          <i class="fa fa-table"></i> View Cases Table  </div>
+            <i class="fa fa-table"></i> Doctor
+          </div>
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
@@ -27,58 +28,52 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="search">Search by Emergency</label>
+                  <label for="search">Search by Full Name</label>
                   <input type="email" class="form-control" id="search" aria-describedby="search" placeholder="" v-model="inputSearch">
-                  
+
                 </div>
               </div>
             </div>
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <table class="table table-bordered" id="" width="100%" cellspacing="0">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Emergency Address</th>
-                    <th>Emergency Type</th>
-                    <th>No of injured</th>
-                    <th>Ambulance ID</th>
-                    <th>Active</th>
-                    <th>Note</th>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>specialization</th>
+                    <th>Contact Number</th>
                     <th>Created At</th>
-                    <th>Updated At</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
                     <th>#</th>
-                    <th>Emergency Address</th>
-                    <th>Emergency Type</th>
-                    <th>No of injured</th>
-                    <th>Ambulance ID</th>
-                    <th>Active</th>
-                    <th>Note</th>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>specialization</th>
+                    <th>Contact Number</th>
                     <th>Created At</th>
-                    <th>Updated At</th>
                   </tr>
                 </tfoot>
-                <tbody v-if="totalCases">
-                  <template v-for="(cases, index) in filteredCases">
-                    <tr>
+                <tbody v-if="totalLength > 0">
+                  <template v-for="(doctor, index) in filteredDoctor">
+                    <tr :key="index">
                       <th scope="row">{{index + 1}}</th>
-                      <td>{{cases.emergencyAddress}}</td>
-                      <td>{{cases.emergencyType}}</td>
-                      <td>{{cases.noOfInjured}}</td>
-                      <td>{{cases.ambulanceId}}</td>
-                      <td>{{cases.active}}</td>
-                      <td>{{cases.note}}</td>
-                      <td>{{cases.createdAt}}</td>
-                      <td>{{cases.updatedAt}}</td>
+                      <td>{{doctor._id}}</td>
+                      <td>{{doctor.fullName}}</td>
+                      <td>{{doctor.email}}</td>
+                      <td>{{doctor.fullName}}</td>
+                      <td>{{doctor.contactNo}}</td>
+                      <td>{{doctor.createdAt}}</td>
                     </tr>
                   </template>
                 </tbody>
                 <tbody v-else>
                   <tr class="table-secondary">
-                    <td colspan="6">
+                    <td colspan="7">
                       <p class="text-center">There is no data</p>
                     </td>
                   </tr>
@@ -90,13 +85,13 @@
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing" :class="{disabled: prevBtn}">Previous</a></li> -->
                 <template  v-for="(pages, key) in noPages">
                   <li class="page-item" :key="key"><a class="page-link" @click="getCurrentView(pages)">{{pages}}</a></li>
-                  
+
                 </template>
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing">Next</a></li> -->
               </ul>
             </nav>
           </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        <div class="card-footer small text-muted">Updated</div>
       </div>
 
       </div>
@@ -106,15 +101,15 @@
 </template>
 
 <script>
-import DashboardNav from '../components/DashboardNav'
-import Footer from '../components/Footer'
+import DashboardNav from './DashboardNav'
+import Footer from './Footer'
 import DataFunctions from '../services/DataFunctions'
 
 export default {
-  name: 'ViewCall',
+  name: 'AllComplaint',
   data: () => ({
-    msg: 'Welcome to ViewCall Component!',
-    totalCases: [],
+    msg: 'Welcome to AllComplaint Component!',
+    totalDoctors: [],
     totalLength: '',
     currentView: [],
     noPages: '',
@@ -123,20 +118,14 @@ export default {
     prevBtn: true
   }),
   methods: {
-    async getTotalCase () {
+    async getTotalDoctor () {
       try {
-        var response = await DataFunctions.getTotalCase()
-        this.totalCases = response.data.data
-        console.log(this.totalCases)
-        this.totalLength = this.totalCases.length
-        if (this.totalLength > 10) {
-          for (var i = 0; i < 10; i++) {
-            this.currentView.push(this.totalCases[i])
-          }
-        } else {
-          for (var x = 0; x < this.totalLength; x++) {
-            this.currentView.push(this.totalCases[x])
-          }
+        const response = await DataFunctions.getDoctor()
+        console.log(response)
+        this.totalDoctors = response.data.data
+        this.totalLength = this.totalDoctors.length
+        for (var i = 0; i < this.totalLength; i++) {
+          this.currentView.push(this.totalDoctors[i])
         }
       } catch (error) {
         console.log(error.response.data)
@@ -157,17 +146,17 @@ export default {
       this.currentView = []
       if (toSeeing === 0) {
         for (var i = 0; i < this.viewSelect; i++) {
-          this.currentView.push(this.totalCases[i])
+          this.currentView.push(this.totalDoctors[i])
         }
       } else {
         if (toSee > this.totalLength) {
           console.log('but now to see ' + this.totalLength)
           for (var y = toSeeing; y < this.totalLength; y++) {
-            this.currentView.push(this.totalCases[y])
+            this.currentView.push(this.totalDoctors[y])
           }
         } else {
           for (var x = toSeeing; x < toSee; x++) {
-            this.currentView.push(this.totalCases[x])
+            this.currentView.push(this.totalDoctors[x])
           }
         }
       }
@@ -181,7 +170,7 @@ export default {
     Footer
   },
   mounted () {
-    this.getTotalCase()
+    this.getTotalDoctor()
     // this.calPag()
   },
   updated () {
@@ -197,14 +186,14 @@ export default {
       console.log(this.viewSelect)
       this.currentView = []
       for (var i = 0; i < this.viewSelect; i++) {
-        this.currentView.push(this.totalCases[i])
+        this.currentView.push(this.totalDoctors[i])
       }
     }
   },
   computed: {
-    filteredCases: function () {
-      return this.currentView.filter((cases) => {
-        return cases.emergencyAddress.match(this.inputSearch)
+    filteredDoctor: function () {
+      return this.currentView.filter((doctors) => {
+        return doctors.fullName.match(this.inputSearch)
       })
     }
   }

@@ -1,21 +1,33 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <a class="navbar-brand" href="" @click="gotoRecordCall"><i class="fa fa-fw fa-dashboard"></i> Admin Dashboard</a>
+    <a class="navbar-brand" href="" @click="gotoCreateDoctor"><i class="fa fa-fw fa-dashboard"></i> Admin Dashboard</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="dashbboardAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Record Call">
-          <a class="nav-link" href="" @click="gotoRecordCall">
-            <i class="fa fa-fw fa-phone"></i>
-            <span class="nav-link-text">Record Call</span>
+          <a class="nav-link" href="" @click="gotoCreateDoctor">
+            <i class="fa fa-fw fa-user-md"></i>
+            <span class="nav-link-text">Create Doctor</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Active Cases">
-          <a class="nav-link" href="" @click="gotoActiveCases">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Complaint">
+          <a class="nav-link" href="" @click="gotoAllComplaint">
             <i class="fa fa-fw fa-briefcase"></i>
-            <span class="nav-link-text">Active Cases</span>
+            <span class="nav-link-text">All Complaint</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Patients">
+          <a class="nav-link" href="" @click="gotoAllPatient">
+            <i class="fa fa-fw fa-briefcase"></i>
+            <span class="nav-link-text">All Patients</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Doctor">
+          <a class="nav-link" href="" @click="gotoAllDoctor">
+            <i class="fa fa-fw fa-briefcase"></i>
+            <span class="nav-link-text">All Doctor</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Settings">
@@ -23,37 +35,6 @@
             <i class="fa fa-fw fa-wrench"></i>
             <span class="nav-link-text">Settings</span>
           </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Create Resources">
-          <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseCR" data-parent="#dashbboardAccordion">
-            <i class="fa fa-fw fa-plus"></i>
-            <span class="nav-link-text">Create Resources</span>
-          </a>
-          <ul class="sidenav-second-level collapse" id="collapseCR">
-            <li>
-              <a href="" @click="gotoCreateDriver">Create Driver</a>
-            </li>
-            <li>
-              <a href="" @click="gotoCreateAmbulance">Create Ambulance</a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Manage Resources">
-          <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMR" data-parent="#dashbboardAccordion">
-            <i class="fa fa-fw fa-sitemap"></i>
-            <span class="nav-link-text">Manage Resources</span>
-          </a>
-          <ul class="sidenav-second-level collapse" id="collapseMR">
-            <li>
-              <a href="" @click="gotoManageAmbulances">Manage Ambulance</a>
-            </li>
-            <li>
-              <a href="" @click="gotoManageDrivers">Manage Driver</a>
-            </li>
-             <!-- <li>
-              <a href="">Manage Staffs</a>
-            </li> -->
-          </ul>
         </li>
       </ul>
       <!-- <ul class="navbar-nav sidenav-toggler">
@@ -88,33 +69,25 @@ export default {
     msg: 'Welcome to DashboardNav Component!'
   }),
   methods: {
-    gotoRecordCall (e) {
+    gotoCreateDoctor (e) {
       e.preventDefault()
-      this.$router.push({name: 'RecordCall'})
+      this.$router.push({name: 'CreateDoctor'})
+    },
+    gotoAllComplaint (e) {
+      e.preventDefault()
+      this.$router.push({name: 'AllComplaint'})
+    },
+    gotoAllPatient (e) {
+      e.preventDefault()
+      this.$router.push({name: 'AllPatient'})
     },
     gotoSettings (e) {
       e.preventDefault()
       this.$router.push({name: 'Settings'})
     },
-    gotoActiveCases (e) {
+    gotoAllDoctor (e) {
       e.preventDefault()
-      this.$router.push({name: 'ActiveCases'})
-    },
-    gotoCreateAmbulance (e) {
-      e.preventDefault()
-      this.$router.push({name: 'CreateAmbulance'})
-    },
-    gotoCreateDriver (e) {
-      e.preventDefault()
-      this.$router.push({name: 'CreateDriver'})
-    },
-    gotoManageAmbulances (e) {
-      e.preventDefault()
-      this.$router.push({name: 'ManageAmbulances'})
-    },
-    gotoManageDrivers (e) {
-      e.preventDefault()
-      this.$router.push({name: 'ManageDrivers'})
+      this.$router.push({name: 'AllDoctor'})
     },
     goBack (e) {
       e.preventDefault()

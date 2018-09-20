@@ -44,7 +44,9 @@ export default {
     logOut (e) {
       e.preventDefault()
       this.$store.dispatch('setTokenDoctor', null)
+      localStorage.removeItem('setAdmin')
       localStorage.removeItem('setDoctor')
+      localStorage.removeItem('setPatient')
       this.$router.push('/')
     }
   }

@@ -1,19 +1,20 @@
-  <template>
+<template>
   <div class="content">
     <DashboardNav></DashboardNav>
     <div class="content-wrapper">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>View Drivers</h3>
+            <h3>Active Patient</h3>
           </div>
-        </div>  
+        </div>
         <hr>
 
         <!-- <code>query: {{ query }}</code> -->
         <div class="card mb-3">
           <div class="card-header">
-          <i class="fa fa-table"></i> View Drivers Table  </div>
+            <i class="fa fa-table"></i> Patient
+          </div>
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
@@ -27,52 +28,58 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="search">Search by Fullname</label>
+                  <label for="search">Search by Full Name</label>
                   <input type="email" class="form-control" id="search" aria-describedby="search" placeholder="" v-model="inputSearch">
-                  
+
                 </div>
               </div>
             </div>
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <table class="table table-bordered" id="" width="100%" cellspacing="0">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Fullname</th>
+                    <th>Full Name</th>
                     <th>Email</th>
-                    <th>Contact</th>
+                    <th>Gender</th>
+                    <th>Age Group</th>
+                    <th>Contact Number</th>
+                    <th>Cmplaints ID</th>
                     <th>Created At</th>
-                    <th>Updated At</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Fullname</th>
+                    <th>Full Name</th>
                     <th>Email</th>
-                    <th>Contact</th>
+                    <th>Gender</th>
+                    <th>Age Group</th>
+                    <th>Contact Number</th>
+                    <th>Cmplaints ID</th>
                     <th>Created At</th>
-                    <th>Updated At</th>
                   </tr>
                 </tfoot>
-                <tbody v-if="totalDrivers">
-                  <template v-for="(driver, index) in filteredDrivers">
-                    <tr>
+                <tbody v-if="totalLength > 0">
+                  <template v-for="(patients, index) in filteredPatient">
+                    <tr :key="index">
                       <th scope="row">{{index + 1}}</th>
-                      <td>{{driver._id}}</td>
-                      <td>{{driver.fullName}}</td>
-                      <td>{{driver.email}}</td>
-                      <td>{{driver.contact}}</td>
-                      <td>{{driver.createdAt}}</td>
-                      <td>{{driver.updatedAt}}</td>
+                      <td>{{patients._id}}</td>
+                      <td>{{patients.fullName}}</td>
+                      <td>{{patients.email}}</td>
+                      <td>{{patients.gender}}</td>
+                      <td>{{patients.ageGroup}}</td>
+                      <td>{{patients.contactNo}}</td>
+                      <td>{{patients.complaints}}</td>
+                      <td>{{patients.createdAt}}</td>
                     </tr>
                   </template>
                 </tbody>
                 <tbody v-else>
                   <tr class="table-secondary">
-                    <td colspan="6">
+                    <td colspan="9">
                       <p class="text-center">There is no data</p>
                     </td>
                   </tr>
@@ -84,13 +91,13 @@
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing" :class="{disabled: prevBtn}">Previous</a></li> -->
                 <template  v-for="(pages, key) in noPages">
                   <li class="page-item" :key="key"><a class="page-link" @click="getCurrentView(pages)">{{pages}}</a></li>
-                  
+
                 </template>
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing">Next</a></li> -->
               </ul>
             </nav>
           </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        <div class="card-footer small text-muted">Updated</div>
       </div>
 
       </div>
@@ -100,15 +107,15 @@
 </template>
 
 <script>
-import DashboardNav from '../components/DashboardNav'
-import Footer from '../components/Footer'
+import DashboardNav from './DashboardNav'
+import Footer from './Footer'
 import DataFunctions from '../services/DataFunctions'
 
 export default {
-  name: 'ViewCall',
+  name: 'AllComplaint',
   data: () => ({
-    msg: 'Welcome to ViewCall Component!',
-    totalDrivers: [],
+    msg: 'Welcome to AllComplaint Component!',
+    totalPatient: [],
     totalLength: '',
     currentView: [],
     noPages: '',
@@ -117,19 +124,14 @@ export default {
     prevBtn: true
   }),
   methods: {
-    async getTotalDriver () {
+    async getTotalDoctor () {
       try {
-        var response = await DataFunctions.getDriverAvailbleForAssinging()
-        this.totalDrivers = response.data.data
-        this.totalLength = this.totalDrivers.length
-        if (this.totalLength > 10) {
-          for (var i = 0; i < 10; i++) {
-            this.currentView.push(this.totalDrivers[i])
-          }
-        } else {
-          for (var x = 0; x < this.totalLength; x++) {
-            this.currentView.push(this.totalDrivers[x])
-          }
+        const response = await DataFunctions.getPatient()
+        console.log(response)
+        this.totalPatient = response.data.data
+        this.totalLength = this.totalPatient.length
+        for (var i = 0; i < this.totalLength; i++) {
+          this.currentView.push(this.totalPatient[i])
         }
       } catch (error) {
         console.log(error.response.data)
@@ -150,17 +152,17 @@ export default {
       this.currentView = []
       if (toSeeing === 0) {
         for (var i = 0; i < this.viewSelect; i++) {
-          this.currentView.push(this.totalDrivers[i])
+          this.currentView.push(this.totalPatient[i])
         }
       } else {
         if (toSee > this.totalLength) {
           console.log('but now to see ' + this.totalLength)
           for (var y = toSeeing; y < this.totalLength; y++) {
-            this.currentView.push(this.totalDrivers[y])
+            this.currentView.push(this.totalPatient[y])
           }
         } else {
           for (var x = toSeeing; x < toSee; x++) {
-            this.currentView.push(this.totalDrivers[x])
+            this.currentView.push(this.totalPatient[x])
           }
         }
       }
@@ -174,11 +176,11 @@ export default {
     Footer
   },
   mounted () {
-    this.getTotalDriver()
+    this.getTotalDoctor()
     // this.calPag()
   },
   updated () {
-    // this.calPag()
+    this.calPag()
   },
   watch: {
     currentView (val) {
@@ -190,14 +192,14 @@ export default {
       console.log(this.viewSelect)
       this.currentView = []
       for (var i = 0; i < this.viewSelect; i++) {
-        this.currentView.push(this.totalDrivers[i])
+        this.currentView.push(this.totalPatient[i])
       }
     }
   },
   computed: {
-    filteredDrivers: function () {
-      return this.currentView.filter((drivers) => {
-        return drivers.fullName.match(this.inputSearch)
+    filteredPatient: function () {
+      return this.currentView.filter((patients) => {
+        return patients.fullName.match(this.inputSearch)
       })
     }
   }

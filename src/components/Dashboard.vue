@@ -1,42 +1,26 @@
 <template>
   <div class="content bg-dark" id="page-top">
-    <DoctorNav></DoctorNav>
+    <DashboardNav></DashboardNav>
     <div class="content-wrapper">
       <div class="container-fluid bg-light">
         <!-- Breadcrumbs-->
-        <ol class="breadcrumb firstBread animated slideInLeft">
+        <ol class="breadcrumb animated slideInLeft">
           <li class="breadcrumb-item">
             <a href="" style="text-decoration: none" @click="doNothing">Dashboard</a>
           </li>
           <li class="breadcrumb-item active">{{username | toUppercase}}</li>
         </ol>
-        <ol class="breadcrumb animated slideInLeft">
-          <li class="breadcrumb-item">
-            <a href="" style="text-decoration: none" @click="doNothing">Current Status</a>
-          </li>
-          <li class="breadcrumb-item active">
-            <span v-if="currentStatus" class="badge badge-primary"><b>You are currently avaliable at the Hospital</b></span>
-            <span v-else class="badge badge-danger"><b>You are currently not avaliable at the Hospital</b></span>
-            <br>
-          </li>
-
-          <button type="button" class="btn btn-block text-white btn-md" @click="changeStatus" style="margin-top: 4px" :class="{'btn-primary': !currentStatus, 'btn-info': currentStatus}">
-              <span v-if="currentStatus">Out of the Hospital</span>
-              <span v-else>Back at the Hospital</span>
-          </button>
-        </ol>
-
         <hr>
 
         <!-- Icon Cards-->
         <div class="row">
-          <div class="col-xl-4 col-sm-6 mb-4 animated bounceIn">
+          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
             <div class="card text-white bg-primary o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon animated pulse infinite">
                   <i class="fa fa-fw fa-volume-up"></i>
                 </div>
-                <div class="mr-5"><b>{{totalComplaintsNo}} Total Session(s) Handled</b></div>
+                <div class="mr-5"><b>{{totalComplaintsNo}} Total Complaint(s)</b></div>
               </div>
               <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllComplaint">
                 <span class="float-left">View Details</span>
@@ -46,13 +30,13 @@
               </a>
             </div>
           </div>
-          <div class="col-xl-4 col-sm-6 mb-4 animated bounceIn">
+          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
             <div class="card text-white bg-warning o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon animated pulse infinite">
                   <i class="fa fa-fw fa-heartbeat"></i>
                 </div>
-                <div class="mr-5"><b>{{totalActiveComplaintsNo}}  Active Session(s)</b></div>
+                <div class="mr-5"><b>{{totalActiveComplaintsNo}}  Active Complaint(s)</b></div>
               </div>
               <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllAciveComplaint">
                 <span class="float-left">View Details</span>
@@ -62,15 +46,31 @@
               </a>
             </div>
           </div>
-          <div class="col-xl-4 col-sm-6 mb-4 animated bounceIn">
+          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
+            <div class="card text-white bg-success o-hidden h-100">
+              <div class="card-body">
+                <div class="card-body-icon animated pulse infinite">
+                  <i class="fa fa-fw fa-user-md"></i>
+                </div>
+                <div class="mr-5"><b>{{getDoctorsAvailableNo}} Doctors On Premesis </b></div>
+              </div>
+              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllActiveDoctor">
+                <span class="float-left">View Details</span>
+                <span class="float-right">
+                  <i class="fa fa-angle-right"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6 mb-3 animated bounceIn">
             <div class="card text-white bg-danger o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon animated pulse infinite">
                   <i class="fa fa-fw fa-stethoscope"></i>
                 </div>
-                <div class="mr-5"><b>{{totalResolvedComplaintsNo}} Resolved Session(s)</b></div>
+                <div class="mr-5"><b>{{totalResolvedComplaintsNo}} Resolved Complaint(s)</b></div>
               </div>
-              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllReolvedComplaint">
+              <a class="card-footer text-white clearfix small z-1 view" @click="goToViewAllReolved">
                 <span class="float-left">View Details</span>
                 <span class="float-right">
                   <i class="fa fa-angle-right"></i>
@@ -88,44 +88,39 @@
       <br>
 
       <!-- Footer -->
-      <DoctorFooter></DoctorFooter>
+      <Footer></Footer>
     </div>
 
   </div>
 </template>
 
 <script>
-import DoctorNav from './DoctorNav'
-import DoctorFooter from './DoctorFooter'
-import DataFunctions from '../../services/DataFunctions'
-import Functions from '../../services/Functions'
+import DashboardNav from './DashboardNav'
+import Footer from './Footer'
+import DataFunctions from '../services/DataFunctions'
 
 export default {
-  name: 'DoctorDasboard',
+  name: 'Dashboard',
   data: () => ({
-    msg: 'Welcome to DoctorDasboard Component!',
+    msg: 'Welcome to Dashboard Component!',
     username: '',
     totalComplaintsNo: '',
     totalActiveComplaintsNo: '',
     patientId: '',
     totalResolvedComplaintsNo: '',
-    currentStatus: '',
-    contactNo: ''
+    getDoctorsAvailableNo: ''
   }),
   components: {
-    DoctorNav,
-    DoctorFooter
+    DashboardNav,
+    Footer
   },
   methods: {
     getUser () {
-      var user = JSON.parse(localStorage.getItem('setDoctor'))
+      var user = JSON.parse(localStorage.getItem('setAdmin'))
       this.username = user.fullName
-      this.doctorId = user._id
-      this.currentStatus = user.inHospital
-      this.contactNo = user.contactNo
+      this.patientId = user._id
       console.log(this.username)
-      console.log(this.doctorId)
-      console.log(this.contactNo)
+      console.log(this.patientId)
     },
     doNothing (e) {
       e.preventDefault()
@@ -134,12 +129,11 @@ export default {
       this.getTotalComplaintNo()
       this.getTotalActiveComplaintNo()
       this.getPatientResolvedComplaint()
+      this.getDoctorsAvailable()
     },
     async getTotalComplaintNo () {
       try {
-        const response = await DataFunctions.getDoctorComplaints({
-          doctorId: this.doctorId
-        })
+        const response = await DataFunctions.getComplaint()
         console.log(response)
         this.totalComplaintsNo = response.data.data.length
         console.log(this.totalComplaintsNo)
@@ -149,9 +143,7 @@ export default {
     },
     async getTotalActiveComplaintNo () {
       try {
-        const response = await DataFunctions.getDoctorActiveComplaints({
-          doctorId: this.doctorId
-        })
+        const response = await DataFunctions.getActiveComplaint()
         console.log(response)
         this.totalActiveComplaintsNo = response.data.data.length
         console.log(this.totalActiveComplaintsNo)
@@ -161,9 +153,7 @@ export default {
     },
     async getPatientResolvedComplaint () {
       try {
-        const response = await DataFunctions.getDoctorResolvedComplaint({
-          doctorId: this.doctorId
-        })
+        const response = await DataFunctions.getAnsweredComplaint()
         console.log(response)
         this.totalResolvedComplaintsNo = response.data.data.length
         console.log(this.totalResolvedComplaintsNo)
@@ -171,32 +161,32 @@ export default {
         console.log(error.response.data)
       }
     },
-    async changeStatus (e) {
-      e.preventDefault()
-      this.currentStatus = !this.currentStatus
+    async getDoctorsAvailable () {
       try {
-        const response = await Functions.changeStatus({
-          doctorId: this.doctorId,
-          inHospital: this.currentStatus
-        })
+        const response = await DataFunctions.getDoctorsAvailable()
         console.log(response)
-        this.currentStatus = response.data.data.inHospital
-        console.log(this.totalResolvedComplaintsNo)
+        this.getDoctorsAvailableNo = response.data.data.length
+        console.log(this.getDoctorsAvailableNo)
       } catch (error) {
         console.log(error.response.data)
       }
     },
+
     goToViewAllComplaint (e) {
       e.preventDefault()
-      this.$router.push({name: 'DoctorViewComplaints'})
+      this.$router.push({name: 'AllComplaint'})
     },
     goToViewAllAciveComplaint (e) {
       e.preventDefault()
-      this.$router.push({name: 'DoctorAcitveComplaints'})
+      this.$router.push({name: 'ActiveComplaint'})
     },
-    goToViewAllReolvedComplaint (e) {
+    goToViewAllReolved (e) {
       e.preventDefault()
-      this.$router.push({name: 'DoctorResolvedComplaints'})
+      this.$router.push({name: 'ResolvedComplaint'})
+    },
+    goToViewAllActiveDoctor (e) {
+      e.preventDefault()
+      this.$router.push({name: 'ActiveDoctor'})
     }
   },
   mounted () {
@@ -213,7 +203,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .firstBread {
+  .breadcrumb {
     margin-top: 50px;
   }
   #cview {

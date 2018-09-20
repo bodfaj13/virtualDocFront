@@ -1,20 +1,14 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col-md-12">
-          <h3>Manage Driver(s)</h3>
-      </div>
-    </div>  
-    <hr>
-
+    {{msg}}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ManageDrivers',
+  name: 'ResolvedComplaint',
   data: () => ({
-    msg: 'Welcome to Manage Drivers Component!'
+    msg: 'Welcome to ResolvedComplaint Component!'
   })
 }
 </script>
@@ -32,4 +26,3 @@ export default {
 
   }
 </style>
-    

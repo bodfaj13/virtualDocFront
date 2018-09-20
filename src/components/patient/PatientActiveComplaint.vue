@@ -86,7 +86,7 @@
                 </tbody>
                 <tbody v-else>
                   <tr class="table-secondary">
-                    <td colspan="7">
+                    <td colspan="8">
                       <p class="text-center">There is no data</p>
                     </td>
                   </tr>

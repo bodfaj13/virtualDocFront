@@ -1,11 +1,11 @@
 <template>
   <div class="content">
-    <DoctorNav></DoctorNav>
+    <DashboardNav></DashboardNav>
     <div class="content-wrapper">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>View Handled Issues</h3>
+            <h3>Active Complaints</h3>
           </div>
         </div>
         <hr>
@@ -13,7 +13,7 @@
         <!-- <code>query: {{ query }}</code> -->
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fa fa-table"></i> Issues
+            <i class="fa fa-table"></i> Complaints
           </div>
           <div class="card-body">
             <div class="row">
@@ -96,34 +96,31 @@
 
       </div>
     </div>
-    <DoctorFooter></DoctorFooter>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
-import DoctorNav from './DoctorNav'
-import DoctorFooter from './DoctorFooter'
-import DataFunctions from '../../services/DataFunctions'
+import DashboardNav from './DashboardNav'
+import Footer from './Footer'
+import DataFunctions from '../services/DataFunctions'
 
 export default {
-  name: 'DoctorViewComplaints',
+  name: 'AllComplaint',
   data: () => ({
-    msg: 'Welcome to PatientViewComplaints Component!',
+    msg: 'Welcome to AllComplaint Component!',
     totalComplaints: [],
     totalLength: '',
     currentView: [],
     noPages: '',
     viewSelect: 10,
     inputSearch: '',
-    prevBtn: true,
-    doctorId: ''
+    prevBtn: true
   }),
   methods: {
     async getTotalComplaint () {
       try {
-        const response = await DataFunctions.getDoctorComplaints({
-          doctorId: this.doctorId
-        })
+        const response = await DataFunctions.getComplaint()
         console.log(response)
         this.totalComplaints = response.data.data
         this.totalLength = this.totalComplaints.length
@@ -166,19 +163,13 @@ export default {
     },
     doNothing (e) {
       e.preventDefault()
-    },
-    getUser () {
-      var doctor = JSON.parse(localStorage.getItem('setDoctor'))
-      this.doctorId = doctor._id
-      console.log(this.doctorId)
     }
   },
   components: {
-    DoctorNav,
-    DoctorFooter
+    DashboardNav,
+    Footer
   },
   mounted () {
-    this.getUser()
     this.getTotalComplaint()
     // this.calPag()
   },

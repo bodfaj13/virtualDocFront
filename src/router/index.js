@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import DoctorLogin from '@/pages/DoctorLogin'
 import PatientLogin from '@/pages/PatientLogin'
-// import Dashboard from '@/pages/Dashboard'
+import AdminLogin from '@/pages/AdminLogin'
+import Dashboard from '@/components/Dashboard'
 // import store from '@/store/store'
 import HomePage from '@/pages/HomePage'
 import PatientRegister from '@/pages/PatientRegister'
@@ -16,6 +17,16 @@ import DoctorDasboard from '@/components/doctor/DoctorDasboard'
 import DoctorSettings from '@/components/doctor/DoctorSettings'
 import AnswerComplaints from '@/components/doctor/AnswerComplaints'
 import DoctorViewComplaints from '@/components/doctor/DoctorViewComplaints'
+import DoctorAcitveComplaints from '@/components/doctor/DoctorAcitveComplaints'
+import DoctorResolvedComplaints from '@/components/doctor/DoctorResolvedComplaints'
+import Settings from '@/components/Settings'
+import AllComplaint from '@/components/AllComplaint'
+import AllPatient from '@/components/AllPatient'
+import CreateDoctor from '@/components/CreateDoctor'
+import ActiveDoctor from '@/components/ActiveDoctor'
+import ActiveComplaint from '@/components/ActiveComplaint'
+import ResolvedComplaint from '@/components/ResolvedComplaint'
+import AllDoctor from '@/components/AllDoctor'
 
 Vue.use(Router)
 
@@ -37,6 +48,11 @@ export default new Router({
       path: '/patientlogin',
       name: 'PatientLogin',
       component: PatientLogin
+    },
+    {
+      path: '/admin',
+      name: 'AdminLogin',
+      component: AdminLogin
     },
     {
       path: '/patientregister',
@@ -96,6 +112,63 @@ export default new Router({
       path: '/dashboard/doctor/view-complaints',
       name: 'DoctorViewComplaints',
       component: DoctorViewComplaints
+    },
+    {
+      path: '/dashboard/doctor/view-active-complaints',
+      name: 'DoctorAcitveComplaints',
+      component: DoctorAcitveComplaints
+    },
+    {
+      path: '/dashboard/doctor/view-resolved-complaints',
+      name: 'DoctorResolvedComplaints',
+      component: DoctorResolvedComplaints
+    },
+    {
+      path: '/dashboard/admin',
+      // name: 'PatientDasboard',
+      component: Dashboard,
+      children: [
+        {
+          path: '',
+          name: 'CreateDoctor',
+          component: CreateDoctor
+        },
+        {
+          path: '/dashboard/admin/settings',
+          name: 'Settings',
+          component: Settings
+        }
+      ]
+    },
+    {
+      path: '/dashboard/admin/view-complaints',
+      name: 'AllComplaint',
+      component: AllComplaint
+    },
+    {
+      path: '/dashboard/admin/view-patient',
+      name: 'AllPatient',
+      component: AllPatient
+    },
+    {
+      path: '/dashboard/admin/view-active-doctor',
+      name: 'ActiveDoctor',
+      component: ActiveDoctor
+    },
+    {
+      path: '/dashboard/admin/view-active-complaint',
+      name: 'ActiveComplaint',
+      component: ActiveComplaint
+    },
+    {
+      path: '/dashboard/admin/view-resolved-complaint',
+      name: 'ResolvedComplaint',
+      component: ResolvedComplaint
+    },
+    {
+      path: '/dashboard/admin/view-doctor',
+      name: 'AllDoctor',
+      component: AllDoctor
     }
   ]
 })

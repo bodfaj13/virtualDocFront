@@ -25,6 +25,9 @@ export default {
   getPatient () {
     return Api().get('getpatient')
   },
+  getComplaint () {
+    return Api().get('getcomplaint')
+  },
   getDoctorsAvailable () {
     return Api().get('getdocvtorsavailable')
   },

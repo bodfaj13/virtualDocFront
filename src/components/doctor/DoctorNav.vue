@@ -15,7 +15,7 @@
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="View All Complaint">
           <a class="nav-link" href="" @click="goToViewAllComplaint">
             <i class="fa fa-fw fa-list"></i>
-            <span class="nav-link-text">View All Attented Complaint</span>
+            <span class="nav-link-text">Attented Complaint</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Settings">

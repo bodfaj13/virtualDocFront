@@ -17,6 +17,9 @@
             <li class="nav-item active">
               <a class="nav-link" href="" @click="doctorLogin">Doctor Login</a>
             </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="" @click="adminLogin">Admin Login</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -41,6 +44,10 @@ export default {
     patientLogin (e) {
       e.preventDefault()
       this.$router.push({name: 'PatientLogin'})
+    },
+    adminLogin (e) {
+      e.preventDefault()
+      this.$router.push({name: 'AdminLogin'})
     }
   }
 }

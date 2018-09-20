@@ -1,11 +1,11 @@
 <template>
   <div class="content">
-    <DoctorNav></DoctorNav>
+    <DashboardNav></DashboardNav>
     <div class="content-wrapper">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>View Handled Issues</h3>
+            <h3>Active Doctor</h3>
           </div>
         </div>
         <hr>
@@ -13,7 +13,7 @@
         <!-- <code>query: {{ query }}</code> -->
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fa fa-table"></i> Issues
+            <i class="fa fa-table"></i> Doctor
           </div>
           <div class="card-body">
             <div class="row">
@@ -28,7 +28,7 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="search">Search by Title</label>
+                  <label for="search">Search by Full Name</label>
                   <input type="email" class="form-control" id="search" aria-describedby="search" placeholder="" v-model="inputSearch">
 
                 </div>
@@ -40,10 +40,10 @@
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Desc</th>
-                    <th>Level</th>
-                    <th>StillActive</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>specialization</th>
+                    <th>Contact Number</th>
                     <th>Created At</th>
                   </tr>
                 </thead>
@@ -51,23 +51,23 @@
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Desc</th>
-                    <th>Level</th>
-                    <th>StillActive</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>specialization</th>
+                    <th>Contact Number</th>
                     <th>Created At</th>
                   </tr>
                 </tfoot>
                 <tbody v-if="totalLength > 0">
-                  <template v-for="(complaint, index) in filteredComplaint">
+                  <template v-for="(doctor, index) in filteredDoctor">
                     <tr :key="index">
                       <th scope="row">{{index + 1}}</th>
-                      <td>{{complaint._id}}</td>
-                      <td>{{complaint.title}}</td>
-                      <td>{{complaint.description}}</td>
-                      <td>{{complaint.level}}</td>
-                      <td>{{complaint.stillActive}}</td>
-                      <td>{{complaint.createdAt}}</td>
+                      <td>{{doctor._id}}</td>
+                      <td>{{doctor.fullName}}</td>
+                      <td>{{doctor.email}}</td>
+                      <td>{{doctor.fullName}}</td>
+                      <td>{{doctor.contactNo}}</td>
+                      <td>{{doctor.createdAt}}</td>
                     </tr>
                   </template>
                 </tbody>
@@ -96,39 +96,36 @@
 
       </div>
     </div>
-    <DoctorFooter></DoctorFooter>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
-import DoctorNav from './DoctorNav'
-import DoctorFooter from './DoctorFooter'
-import DataFunctions from '../../services/DataFunctions'
+import DashboardNav from './DashboardNav'
+import Footer from './Footer'
+import DataFunctions from '../services/DataFunctions'
 
 export default {
-  name: 'DoctorViewComplaints',
+  name: 'AllComplaint',
   data: () => ({
-    msg: 'Welcome to PatientViewComplaints Component!',
-    totalComplaints: [],
+    msg: 'Welcome to AllComplaint Component!',
+    totalDoctors: [],
     totalLength: '',
     currentView: [],
     noPages: '',
     viewSelect: 10,
     inputSearch: '',
-    prevBtn: true,
-    doctorId: ''
+    prevBtn: true
   }),
   methods: {
-    async getTotalComplaint () {
+    async getTotalDoctor () {
       try {
-        const response = await DataFunctions.getDoctorComplaints({
-          doctorId: this.doctorId
-        })
+        const response = await DataFunctions.getDoctorsAvailable()
         console.log(response)
-        this.totalComplaints = response.data.data
-        this.totalLength = this.totalComplaints.length
+        this.totalDoctors = response.data.data
+        this.totalLength = this.totalDoctors.length
         for (var i = 0; i < this.totalLength; i++) {
-          this.currentView.push(this.totalComplaints[i])
+          this.currentView.push(this.totalDoctors[i])
         }
       } catch (error) {
         console.log(error.response.data)
@@ -149,37 +146,31 @@ export default {
       this.currentView = []
       if (toSeeing === 0) {
         for (var i = 0; i < this.viewSelect; i++) {
-          this.currentView.push(this.totalComplaints[i])
+          this.currentView.push(this.totalDoctors[i])
         }
       } else {
         if (toSee > this.totalLength) {
           console.log('but now to see ' + this.totalLength)
           for (var y = toSeeing; y < this.totalLength; y++) {
-            this.currentView.push(this.totalComplaints[y])
+            this.currentView.push(this.totalDoctors[y])
           }
         } else {
           for (var x = toSeeing; x < toSee; x++) {
-            this.currentView.push(this.totalComplaints[x])
+            this.currentView.push(this.totalDoctors[x])
           }
         }
       }
     },
     doNothing (e) {
       e.preventDefault()
-    },
-    getUser () {
-      var doctor = JSON.parse(localStorage.getItem('setDoctor'))
-      this.doctorId = doctor._id
-      console.log(this.doctorId)
     }
   },
   components: {
-    DoctorNav,
-    DoctorFooter
+    DashboardNav,
+    Footer
   },
   mounted () {
-    this.getUser()
-    this.getTotalComplaint()
+    this.getTotalDoctor()
     // this.calPag()
   },
   updated () {
@@ -195,14 +186,14 @@ export default {
       console.log(this.viewSelect)
       this.currentView = []
       for (var i = 0; i < this.viewSelect; i++) {
-        this.currentView.push(this.totalComplaints[i])
+        this.currentView.push(this.totalDoctors[i])
       }
     }
   },
   computed: {
-    filteredComplaint: function () {
-      return this.currentView.filter((complaints) => {
-        return complaints.title.match(this.inputSearch)
+    filteredDoctor: function () {
+      return this.currentView.filter((doctors) => {
+        return doctors.fullName.match(this.inputSearch)
       })
     }
   }

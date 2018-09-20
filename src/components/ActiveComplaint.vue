@@ -1,19 +1,20 @@
-  <template>
+<template>
   <div class="content">
     <DashboardNav></DashboardNav>
     <div class="content-wrapper">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <h3>Manage Drivers</h3>
+            <h3>Active Complaints</h3>
           </div>
-        </div>  
+        </div>
         <hr>
 
         <!-- <code>query: {{ query }}</code> -->
         <div class="card mb-3">
           <div class="card-header">
-          <i class="fa fa-table"></i> View Drivers Table  </div>
+            <i class="fa fa-table"></i> Complaints
+          </div>
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
@@ -27,55 +28,52 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="search">Search by Fullname</label>
+                  <label for="search">Search by Title</label>
                   <input type="email" class="form-control" id="search" aria-describedby="search" placeholder="" v-model="inputSearch">
-                  
+
                 </div>
               </div>
             </div>
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <table class="table table-bordered" id="" width="100%" cellspacing="0">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Fullname</th>
-                    <th>Email</th>
-                    <th>Contact</th>
+                    <th>Title</th>
+                    <th>Desc</th>
+                    <th>Level</th>
+                    <th>StillActive</th>
                     <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>IsAvailable</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Fullname</th>
-                    <th>Email</th>
-                    <th>Contact</th>
+                    <th>Title</th>
+                    <th>Desc</th>
+                    <th>Level</th>
+                    <th>StillActive</th>
                     <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>IsAvailable</th>
                   </tr>
                 </tfoot>
-                <tbody v-if="totalDrivers">
-                  <template v-for="(driver, index) in filteredDrivers">
-                    <tr>
+                <tbody v-if="totalLength > 0">
+                  <template v-for="(complaint, index) in filteredComplaint">
+                    <tr :key="index">
                       <th scope="row">{{index + 1}}</th>
-                      <td>{{driver._id}}</td>
-                      <td>{{driver.fullName}}</td>
-                      <td>{{driver.email}}</td>
-                      <td>{{driver.contact}}</td>
-                      <td>{{driver.createdAt}}</td>
-                      <td>{{driver.updatedAt}}</td>
-                      <td>{{driver.isAvailable}}</td>
+                      <td>{{complaint._id}}</td>
+                      <td>{{complaint.title}}</td>
+                      <td>{{complaint.description}}</td>
+                      <td>{{complaint.level}}</td>
+                      <td>{{complaint.stillActive}}</td>
+                      <td>{{complaint.createdAt}}</td>
                     </tr>
                   </template>
                 </tbody>
                 <tbody v-else>
                   <tr class="table-secondary">
-                    <td colspan="6">
+                    <td colspan="7">
                       <p class="text-center">There is no data</p>
                     </td>
                   </tr>
@@ -87,13 +85,13 @@
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing" :class="{disabled: prevBtn}">Previous</a></li> -->
                 <template  v-for="(pages, key) in noPages">
                   <li class="page-item" :key="key"><a class="page-link" @click="getCurrentView(pages)">{{pages}}</a></li>
-                  
+
                 </template>
                 <!-- <li class="page-item"><a class="page-link" @click="doNothing">Next</a></li> -->
               </ul>
             </nav>
           </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        <div class="card-footer small text-muted">Updated</div>
       </div>
 
       </div>
@@ -103,15 +101,15 @@
 </template>
 
 <script>
-import DashboardNav from '../components/DashboardNav'
-import Footer from '../components/Footer'
+import DashboardNav from './DashboardNav'
+import Footer from './Footer'
 import DataFunctions from '../services/DataFunctions'
 
 export default {
-  name: 'ManageDriver',
+  name: 'ActiveComplaint',
   data: () => ({
-    msg: 'Welcome to ManageDriver Component!',
-    totalDrivers: [],
+    msg: 'Welcome to ActiveComplaint Component!',
+    totalComplaints: [],
     totalLength: '',
     currentView: [],
     noPages: '',
@@ -120,19 +118,14 @@ export default {
     prevBtn: true
   }),
   methods: {
-    async getTotalDriver () {
+    async getTotalComplaint () {
       try {
-        var response = await DataFunctions.getAllDrivers()
-        this.totalDrivers = response.data.data
-        this.totalLength = this.totalDrivers.length
-        if (this.totalLength > 10) {
-          for (var i = 0; i < 10; i++) {
-            this.currentView.push(this.totalDrivers[i])
-          }
-        } else {
-          for (var x = 0; x < this.totalLength; x++) {
-            this.currentView.push(this.totalDrivers[x])
-          }
+        const response = await DataFunctions.getActiveComplaint()
+        console.log(response)
+        this.totalComplaints = response.data.data
+        this.totalLength = this.totalComplaints.length
+        for (var i = 0; i < this.totalLength; i++) {
+          this.currentView.push(this.totalComplaints[i])
         }
       } catch (error) {
         console.log(error.response.data)
@@ -153,17 +146,17 @@ export default {
       this.currentView = []
       if (toSeeing === 0) {
         for (var i = 0; i < this.viewSelect; i++) {
-          this.currentView.push(this.totalDrivers[i])
+          this.currentView.push(this.totalComplaints[i])
         }
       } else {
         if (toSee > this.totalLength) {
           console.log('but now to see ' + this.totalLength)
           for (var y = toSeeing; y < this.totalLength; y++) {
-            this.currentView.push(this.totalDrivers[y])
+            this.currentView.push(this.totalComplaints[y])
           }
         } else {
           for (var x = toSeeing; x < toSee; x++) {
-            this.currentView.push(this.totalDrivers[x])
+            this.currentView.push(this.totalComplaints[x])
           }
         }
       }
@@ -177,11 +170,11 @@ export default {
     Footer
   },
   mounted () {
-    this.getTotalDriver()
+    this.getTotalComplaint()
     // this.calPag()
   },
   updated () {
-    // this.calPag()
+    this.calPag()
   },
   watch: {
     currentView (val) {
@@ -193,14 +186,14 @@ export default {
       console.log(this.viewSelect)
       this.currentView = []
       for (var i = 0; i < this.viewSelect; i++) {
-        this.currentView.push(this.totalDrivers[i])
+        this.currentView.push(this.totalComplaints[i])
       }
     }
   },
   computed: {
-    filteredDrivers: function () {
-      return this.currentView.filter((drivers) => {
-        return drivers.fullName.match(this.inputSearch)
+    filteredComplaint: function () {
+      return this.currentView.filter((complaints) => {
+        return complaints.title.match(this.inputSearch)
       })
     }
   }
