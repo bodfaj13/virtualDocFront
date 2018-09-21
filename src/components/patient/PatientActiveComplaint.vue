@@ -73,7 +73,7 @@
 
                       <td>{{complaint.doctorId}}</td>
                       <td>{{complaint.doctorName}}</td>
-                      <td>{{complaint.doctorRemark}}</td>
+                      <td>{{complaint.medicalRemark}}</td>
                       <td>{{complaint.updateAt}}</td>
                       <td>
                         <button type="button" class="btn btn-primary btn-block text-white btn-md" @click="releaseCaseTrigger(index)" data-toggle="modal" data-target="#releaseModal">

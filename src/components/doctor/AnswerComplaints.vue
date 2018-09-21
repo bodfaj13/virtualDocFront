@@ -189,7 +189,8 @@ export default {
     medicalPrescrptionError: '',
     medicalRemark: '',
     medicalRemarkError: '',
-    error: ''
+    error: '',
+    doctorName: ''
   }),
   methods: {
     async getActiveComplaint () {
@@ -241,7 +242,9 @@ export default {
     getUser () {
       var doctor = JSON.parse(localStorage.getItem('setDoctor'))
       this.doctorId = doctor._id
+      this.doctorName = doctor.fullName
       console.log(this.doctorId)
+      console.log(this.doctorName)
     },
     releaseCaseTrigger (no) {
       this.releaseComplaintNo = no
@@ -270,7 +273,8 @@ export default {
             complaintId: this.getComplaintItem._id,
             doctorId: this.doctorId,
             medicalPrescrption: this.medicalPrescrption,
-            medicalRemark: this.medicalRemark
+            medicalRemark: this.medicalRemark,
+            doctorName: this.doctorName
           })
           console.log(response)
           this.answerSuccess = response.data.success
