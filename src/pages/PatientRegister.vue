@@ -78,7 +78,7 @@
             <div class="col-md-12">
                 <button type="button" class="btn btn-info btn-block text-white btn-md" @click="createPatient" :class="{disabled: btnDisabled}">
                 <div class="loader" v-if="loaderSwitch"></div>
-                <span v-else>Create Driver
+                <span v-else>Create Profile
                 </span>
               </button>
             </div>
